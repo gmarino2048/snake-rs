@@ -17,9 +17,13 @@ pub enum TermColor {
 
 #[derive(Debug, Clone)]
 pub struct ColorPair {
-    id: i16
+    id: i16,
+
+    foreground: TermColor,
+    background: TermColor
 }
 
+#[allow(dead_code)]
 impl ColorPair {
     pub fn new(id: i16, foreground: TermColor, background: TermColor) -> Result<Self, WindowError> {
         if ncurses::init_pair(id, foreground as i16, background as i16) != ncurses::OK {
@@ -28,10 +32,23 @@ impl ColorPair {
                 format!("Failed to initialize color pair with id {id:?}")
             ));
         }
-        Ok(ColorPair { id: id })
+
+        Ok(ColorPair { 
+            id: id,
+            foreground: foreground,
+            background: background
+        })
     }
 
     pub fn id(&self) -> i16 {
         self.id
+    }
+
+    pub fn foreground(&self) -> TermColor {
+        self.foreground
+    }
+
+    pub fn background(&self) -> TermColor {
+        self.background
     }
 }

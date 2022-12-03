@@ -13,6 +13,7 @@ pub struct Window {
     handle: *mut i8
 }
 
+#[allow(dead_code)]
 impl Window {
     pub fn new() -> Result<Self, WindowError> {
         let window_handle = ncurses::initscr();
@@ -47,7 +48,11 @@ impl Window {
 
         let mut color = ncurses::has_colors();
         if color {
-            if ncurses::start_color() != ncurses::OK {
+            let colors_ok =
+                ncurses::can_change_color() &&
+                (ncurses::start_color() == ncurses::OK);
+            
+            if !colors_ok {
                 color = false;
             }
         }
@@ -85,7 +90,7 @@ impl Window {
         }
     }
 
-    pub fn put_char(&mut self, char: u32, pos: &Option<Coordinates>, color: &Option<ColorPair>) {
+    pub fn put_char(&mut self, char: char, pos: &Option<Coordinates>, color: &Option<ColorPair>) {
         if let Some(position) = pos {
             self.set_cursor(position);
         }
@@ -94,7 +99,7 @@ impl Window {
             self.set_color(color)
         }
 
-        ncurses::waddch(self.handle, char);
+        ncurses::waddch(self.handle, char as u32);
         self.refresh();
     }
 

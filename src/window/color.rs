@@ -2,6 +2,7 @@
 use super::error::{ WindowError, WindowErrorType };
 
 #[repr(i16)]
+#[allow(dead_code)]
 #[derive(Debug, Clone, Copy)]
 pub enum TermColor {
     Black   = ncurses::COLOR_BLACK,
@@ -16,9 +17,7 @@ pub enum TermColor {
 
 #[derive(Debug, Clone)]
 pub struct ColorPair {
-    id: i16,
-    foreground: TermColor,
-    background: TermColor,
+    id: i16
 }
 
 impl ColorPair {
@@ -29,18 +28,10 @@ impl ColorPair {
                 format!("Failed to initialize color pair with id {id:?}")
             ));
         }
-        Ok(ColorPair { id: id, foreground: foreground, background: background })
+        Ok(ColorPair { id: id })
     }
 
     pub fn id(&self) -> i16 {
         self.id
-    }
-
-    pub fn foreground(&self) -> TermColor {
-        self.foreground
-    }
-
-    pub fn background(&self) -> TermColor {
-        self.background
     }
 }
